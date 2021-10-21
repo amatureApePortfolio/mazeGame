@@ -1,6 +1,6 @@
-const { Engine, Render, Runner, World, Bodies, Body } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-const cells = 30;
+const cells = 3;
 const width = 600;
 const height = 600;
 
@@ -118,6 +118,7 @@ horizontals.forEach((row, rowIndex) => {
       unitLength,
       5,
       {
+        label: 'wall',
         isStatic: true
       }
     );
@@ -137,6 +138,7 @@ verticals.forEach((row, rowIndex) => {
       5,
       unitLength,
       {
+        label: 'wall',
         isStatic: true
       }
     );
@@ -150,6 +152,7 @@ const goal = Bodies.rectangle(
   unitLength * 0.7,
   unitLength * 0.7,
   {
+    label: 'goal',
     isStatic: true
   }
 );
@@ -159,7 +162,10 @@ World.add(world, goal);
 const ball = Bodies.circle(
   unitLength / 2,
   unitLength / 2,
-  unitLength * 0.25
+  unitLength * 0.25,
+  {
+    label: 'ball'
+  }
 );
 
 World.add(world, ball);
@@ -180,4 +186,14 @@ document.addEventListener('keydown', event => {
   if (event.keyCode === 65) {
     Body.setVelocity(ball, { x: x - 5, y })
   }
+})
+
+//Win Condition
+Events.on(engine, 'collisionStart', event => {
+  event.pairs.forEach((collision) => {
+    const labels = ['ball', 'goal'];
+    if (labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label)) {
+      console.log('puser')
+    }
+  })
 })
